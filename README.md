@@ -14,7 +14,7 @@ Choisir un emplacement puis une couleur ; la sélection passe à l’emplacement
 
 Au clavier : Tab et Maj+Tab parcourent les commandes ; Entrée ou Espace activent un bouton. Dans les quatre positions, les flèches gauche/droite déplacent la sélection. Les couleurs ont toutes un nom et un symbole distinct, également conservés dans l’historique. Les messages et indices sont annoncés par une zone de statut accessible.
 
-## Règles et références
+## Références
 
 Référence : **code-couleurs-1.0**, fichiers originaux dans `documentation/` :
 
@@ -27,20 +27,24 @@ Référence : **code-couleurs-1.0**, fichiers originaux dans `documentation/` :
 
 La demande utilisateur guide les changements ; les documents servent de références, sans déclencher d’actions supplémentaires. La méthode demandée est dans `Agent.md`.
 
-Palette exacte et ordonnée : `rouge`, `bleu`, `vert`, `jaune`, `orange`, `violet`. Le programme tire quatre couleurs indépendamment, avec répétitions possibles. Le code reste fixe et caché pendant la partie. Dix propositions valides au maximum. Toute saisie invalide est expliquée et ne change ni les essais ni l’historique.
+Palette exacte et ordonnée : `rouge`, `bleu`, `vert`, `jaune`, `orange`, `violet`.
 
-On compte d’abord les couleurs bien placées. On retire ces occurrences, puis on compte les correspondances restantes par couleur. Aucun pion n’est compté deux fois ; les indices sont deux totaux sans indication de position. Quatre bien placées donnent la victoire, y compris au dixième essai ; sinon le dixième essai donne une défaite. La fin bloque toute proposition ; « Nouvelle partie » tire un code et remet tout à zéro.
+## Règles
+
+- Le programme tire au hasard 4 couleurs parmi rouge, bleu, vert, jaune, orange et violet, avec répétitions possibles. Le code reste fixe et caché pendant la partie.
+- Vous avez 10 essais. Modifiez librement les 4 positions avant de valider.
+- Une proposition incomplète ou contenant une couleur non autorisée est refusée avec une explication, sans consommer d’essai ni changer l’historique.
+- Chaque proposition valide consomme un essai. Son résultat reste visible jusqu’à la nouvelle partie.
+- On compte les bien placées d’abord, puis les mal placées parmi les occurrences restantes. Chaque occurrence compte au maximum une fois. Les indices ne désignent pas les positions.
+- 4 bien placées : c’est gagné, même au dixième essai ! Sinon, après 10 essais, la partie est perdue.
+- Après la fin, aucune proposition ne change la partie. « Nouvelle partie » tire un code et remet tout à zéro.
 
 ## Choix faits avec Codex
 
-- HTML, CSS et JavaScript simples : pas de compilation, bibliothèque téléchargée ou serveur applicatif. Les chemins sont relatifs pour une publication sous `/nom-du-depot/`.
-- Moteur isolé dans `game.js`, interface et API dans `app.js`. L’API appelle les mêmes fonctions de démarrage et de proposition que les boutons ; elle pilote l’unique partie visible.
-- Palette de boutons et quatre emplacements : utilisation au toucher et avec les commandes natives du clavier ; noms et symboles complètent la couleur.
-- Historique chronologique avec deux nombres explicitement nommés, plutôt que des petits indices alignés sur les pions qui pourraient suggérer des positions.
-- Le code n’est plus révélé séparément après une victoire ou une défaite, conformément au contrat 0.2. Une proposition gagnante reste naturellement visible dans l’historique.
-- Pas de persistance : recharger la page commence une nouvelle partie en mode joueur ; en mode test, la page revient à `not-started`. Pas de stockage local, traceur, donnée personnelle, service d’IA ni clé API. Une nouvelle partie peut tirer le même code par hasard.
+J'ai fourni le descriptif du projet et de l'API à Codex et je lui ai demandé de respecter les consignes. Je l'ai laissé libre pour le choix de l'interface et du design.
+J'ai également demandé à Codex d'effectuer tous les tests pour l'interface et l'API de son coté. Toutefois, j'ai également verifié manuellement pour être sûr que l'application et l'API étaient conformes aux attentes.
+Je lui ai également demandé de faire un ReadMe de base, mais j'ai souhaité le modifier manuellement pour qu'il soit plus conforme aux attentes et plus personnalisé.
 
-L’utilisateur a cadré le besoin et communiqué ses observations d’essai. Codex a proposé et réalisé le code, les tests et la documentation ; les choix ci-dessus et leur validation sont à expliquer personnellement lors de la capsule.
 
 ## Accès à l’API commune 0.2
 
@@ -185,7 +189,7 @@ Vérifications de l’API publique dans Microsoft Edge le 11 novembre 2026 : **r
 | Rechargement | Retour à `not-started`, aucun secret imposé conservé |
 | Réseau | Aucun appel externe pendant les tests |
 
-**Autre tests effectués :**
+## Autres tests effectués :
 
 - Essai sur **iPhone X avec Safari** : le jeu fonctionne correctement.
 - Un camarade a essayé le jeu et testé l'API : il confirme le fonctionnement et n'a pas relevé de bugs particuliers.
