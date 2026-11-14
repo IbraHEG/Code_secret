@@ -1,40 +1,50 @@
 # Mastermind — À vous de décoder
 
-Version du jeu **1.1.0** · API **0.2** · Règles **code-couleurs-1.0**  
-Audit de préparation à l’évaluation : **14 novembre 2026**. Les empreintes des fichiers testés sont dans [le rapport automatique](verification/resultats-automatiques.json).
+Version **1.1.0** · API commune de test 0.2 intégrée · Application publiée sur GitHub Pages
 
-- **Code :** [IbraHEG/Code_secret](https://github.com/IbraHEG/Code_secret).
-- **Jeu :** [Jouer sur GitHub Pages](https://ibraheg.github.io/Code_secret/).
-- **Mode professeur :** [Ouvrir le jeu avec `test=1`](https://ibraheg.github.io/Code_secret/?test=1).
+Dépôt du projet : [IbraHEG/Code_secret](https://github.com/IbraHEG/Code_secret). Les fichiers du jeu sont à la racine du dépôt.
 
-## Jouer et comprendre le code
+Jeu publié : [https://ibraheg.github.io/Code_secret/](https://ibraheg.github.io/Code_secret/) · [Accès professeur avec `test=1`](https://ibraheg.github.io/Code_secret/?test=1).
 
-Ouvrir le site ou, localement, double-cliquer sur `index.html`. Les fichiers `index.html`, `styles.css`, `game.js` et `app.js` suffisent : pas d’installation, de compilation ou de serveur applicatif. Choisir une position, puis une couleur. Chaque position peut être modifiée avant validation ; « Effacer » vide le brouillon.
+## Jouer
 
-Au clavier : Tab/Maj+Tab pour parcourir les commandes, Entrée/Espace pour les activer ; les flèches gauche/droite changent la position sélectionnée. Chaque couleur a un nom et un symbole, également présents dans l’historique.
+Ouvrir **index.html** dans un navigateur récent (double-clic sur le fichier). Aucune installation, aucun compte et aucune connexion ne sont nécessaires pour jouer depuis les fichiers locaux. Garder `index.html`, `styles.css`, `game.js` et `app.js` dans le même dossier.
 
-Le programme tire quatre couleurs parmi `rouge`, `bleu`, `vert`, `jaune`, `orange`, `violet`, dans cet ordre de palette. Le code reste fixe et caché, avec répétitions possibles. Il y a dix essais valides. Une proposition invalide est expliquée, sans essai ni entrée d’historique supplémentaire. On compte d’abord les bien placées, puis les correspondances parmi les occurrences restantes : chaque pion compte une seule fois et les indices ne désignent pas les positions. Quatre bien placées donnent la victoire, même au dixième essai ; sinon le dixième essai donne la défaite. Les propositions sont ensuite bloquées ; « Nouvelle partie » remet tout à zéro.
+Choisir un emplacement puis une couleur ; la sélection passe à l’emplacement suivant. Cliquer de nouveau sur un emplacement pour le modifier. « Effacer » vide seulement la proposition en cours. « Valider la proposition » utilise un essai si les quatre couleurs sont valides.
 
-`game.js` contient le calcul et l’état de la partie. `app.js` relie ce moteur aux boutons et à l’API : il n’y a qu’une partie. `styles.css` adapte l’affichage aux écrans. Les tests sont dans `tests/`, les résultats et captures dans `verification/`. La méthode de travail est conservée dans [Agent.md](Agent.md).
+Au clavier : Tab et Maj+Tab parcourent les commandes ; Entrée ou Espace activent un bouton. Dans les quatre positions, les flèches gauche/droite déplacent la sélection. Les couleurs ont toutes un nom et un symbole distinct, également conservés dans l’historique. Les messages et indices sont annoncés par une zone de statut accessible.
 
-## Choix et rôle de Codex — C1
+## Règles et références
 
-L’utilisateur a fixé les règles communes, l’accessibilité au clavier et au toucher, les noms/symboles des couleurs et l’absence de compte, de données personnelles, de service d’IA ou de clé API dans le jeu. Il a demandé l’intégration de l’API à partir du contrat et des commandes de test manuel, puis a communiqué les observations réelles ci-dessous.
+Référence : **code-couleurs-1.0**, fichiers originaux dans `documentation/` :
 
-Codex a proposé et réalisé une application statique en HTML/CSS/JavaScript, un moteur séparé de l’affichage, les tests et la documentation. Le choix d’un moteur commun aux boutons et à l’API évite que le professeur teste une autre partie que celle affichée. Les indices sont des nombres accompagnés de libellés plutôt que des pions alignés avec les positions. Le code n’est jamais révélé séparément, conformément au contrat.
+- `Regles.docx` : règles de référence.
+- `Exemple_partie.docx` : deux parties illustrées ; les images extraites sont aussi conservées.
+- `Consignes.docx` : contexte pédagogique et futurs jalons.
+- `API_info.docx` : première copie du contrat de test 0.2.
+- `API commune de test — Code secret en couleurs.docx` : document fourni pour l’intégration du 11 novembre, contrat 0.2, édition Google 1.5.
+- `Évaluation du projet — Critères, vérification de l’API et de l’interface.docx` : critères d’évaluation, version 1.3.
 
-La validation des choix et leur explication dans la capsule restent personnelles. Recharger recommence la partie ; aucune sauvegarde, collecte, extension PWA ou fonction hors ligne n’a été ajoutée.
+La demande utilisateur guide les changements ; les documents servent de références, sans déclencher d’actions supplémentaires. La méthode demandée est dans `Agent.md`.
 
-## API commune et commandes manuelles
+Palette exacte et ordonnée : `rouge`, `bleu`, `vert`, `jaune`, `orange`, `violet`. Le programme tire quatre couleurs indépendamment, avec répétitions possibles. Le code reste fixe et caché pendant la partie. Dix propositions valides au maximum. Toute saisie invalide est expliquée et ne change ni les essais ni l’historique.
 
-L’objet `window.codeSecretTest` est exposé seulement avec `test=1`. Si l’adresse contient déjà un paramètre, ajouter `&test=1`. Le mode test attend un démarrage (`not-started`) ; le mode joueur démarre normalement.
+On compte d’abord les couleurs bien placées. On retire ces occurrences, puis on compte les correspondances restantes par couleur. Aucun pion n’est compté deux fois ; les indices sont deux totaux sans indication de position. Quatre bien placées donnent la victoire, y compris au dixième essai ; sinon le dixième essai donne une défaite. La fin bloque toute proposition ; « Nouvelle partie » tire un code et remet tout à zéro.
 
-`getConfig()` et `getState()` sont synchrones. `startGame(options?)` et `submitGuess(guess)` renvoient des promesses : attendre chaque appel. L’état contient `status`, `attempts`, `history` (entrées `{ guess, result }`), `lastGuess`, `lastResult`, `lastError` et le complément `remaining`. Aucun champ `secret` ou `solution` n’est exposé.
+## Choix faits avec Codex
 
-Un refus de proposition renseigne `lastError` sans changer les données de jeu. Priorité : `game-not-started`, `game-finished`, `invalid-type`, `invalid-length`, `invalid-color`. Un démarrage invalide rejette une `Error` portant `code` et `message`, en conservant tout l’état et l’écran. Les objets retournés sont des copies indépendantes.
+- HTML, CSS et JavaScript simples : pas de compilation, bibliothèque téléchargée ou serveur applicatif. Les chemins sont relatifs pour une publication sous `/nom-du-depot/`.
+- Moteur isolé dans `game.js`, interface et API dans `app.js`. L’API appelle les mêmes fonctions de démarrage et de proposition que les boutons ; elle pilote l’unique partie visible.
+- Palette de boutons et quatre emplacements : utilisation au toucher et avec les commandes natives du clavier ; noms et symboles complètent la couleur.
+- Historique chronologique avec deux nombres explicitement nommés, plutôt que des petits indices alignés sur les pions qui pourraient suggérer des positions.
+- Le code n’est plus révélé séparément après une victoire ou une défaite, conformément au contrat 0.2. Une proposition gagnante reste naturellement visible dans l’historique.
+- Pas de persistance : recharger la page commence une nouvelle partie en mode joueur ; en mode test, la page revient à `not-started`. Pas de stockage local, traceur, donnée personnelle, service d’IA ni clé API. Une nouvelle partie peut tirer le même code par hasard.
 
-<details>
-<summary>Afficher les commandes de test manuel et leurs résultats attendus</summary>
+L’utilisateur a cadré le besoin et communiqué ses observations d’essai. Codex a proposé et réalisé le code, les tests et la documentation ; les choix ci-dessus et leur validation sont à expliquer personnellement lors de la capsule.
+
+## Accès à l’API commune 0.2
+
+Ouvrir `index.html?test=1`, ou ajouter `?test=1` à l’URL publiée du jeu. Si l’adresse contient déjà des paramètres, ajouter `&test=1` en les conservant. L’objet `window.codeSecretTest` est disponible après le chargement de la page. Sans `test=1`, il n’est pas exposé et le jeu démarre normalement.
 
 ### Tester manuellement dans la console
 
@@ -120,75 +130,104 @@ console.log(etat.lastResult);
 
 Attendu : `{ wellPlaced: 1, misplaced: 2 }` et un essai consommé.
 
-</details>
+### Comportement des appels
 
-## Vérifications et limites — C2
+`startGame` et `submitGuess` renvoient des promesses ; attendre chaque appel avant le suivant. L’état contient `status`, `attempts`, `history` (entrées `{ guess, result }`), `lastGuess`, `lastResult`, `lastError`, ainsi qu’un champ complémentaire `remaining`. Aucun champ `secret` ou `solution` n’est exposé.
 
-Commandes à lancer dans le dossier du projet, avec Node.js :
+Les refus de proposition résolvent la promesse avec `lastError: { code, message }` : priorité `game-not-started`, `game-finished`, `invalid-type`, `invalid-length`, `invalid-color`. Ils conservent les données de la partie. Les saisies refusées pendant `playing` sont expliquées à l’écran.
+
+Un démarrage invalide rejette la promesse avec une `Error` portant `code` et `message`. Les options ne peuvent contenir que `secret`. Si cette clé est présente, sa valeur doit être un tableau valide ; `null` et `undefined` sont refusés. Tout l’état précédent, l’erreur précédente et le brouillon visible sont conservés. Un démarrage valide remet l’écran et tous les champs `last…` à zéro. Les tableaux et objets retournés sont des copies indépendantes.
+
+## Vérifications
+
+Tests métier sans dépendance, avec Node.js :
 
 ```sh
-npm test
-npm run test:api-browser
-npm run test:interface
-npm run verify
+node --test tests/game.test.cjs tests/api.test.cjs
 ```
 
-`npm test` n’a aucune dépendance. Les contrôles navigateur nécessitent Playwright et son Chromium, ou Microsoft Edge avec `BROWSER_CHANNEL=msedge`. Aucun logiciel n’est installé automatiquement. `npm run verify` écrit le [rapport JSON](verification/resultats-automatiques.json) : date, version, empreintes des sources, attendus et résultats réellement obtenus. Un outil absent ou bloqué ne vaut pas preuve d’un défaut du jeu.
+Résultat du 11 novembre 2026 : **14 tests réussis, 0 échec**, dont les 8 tests métier adaptés au nouvel état et 6 tests du contrat 0.2.
 
-Pour contrôler aussi la version publiée, définir `MASTERMIND_URL` avant la vérification, par exemple dans PowerShell :
+**Complément du 14 novembre 2026, version 1.1.0 :** les 14 tests repassent, ainsi que les contrôles de l’interface, de l’API et de leur liaison sur le site GitHub Pages. Le [rapport automatique](verification/resultats-automatiques.json) conserve les attendus, les résultats obtenus, la date et les empreintes des fichiers vérifiés. Il peut être régénéré avec `npm run verify` (Playwright et un navigateur requis pour les contrôles d’interface). Pour inclure le site publié, définir `MASTERMIND_URL=https://ibraheg.github.io/Code_secret/` ; avec Edge, définir aussi `BROWSER_CHANNEL=msedge`. Un test réussi ne garantit pas l’absence de tout défaut.
 
-```powershell
-$env:BROWSER_CHANNEL = "msedge"
-$env:MASTERMIND_URL = "https://ibraheg.github.io/Code_secret/"
-npm run verify
-```
-
-Le rapport distingue les essais locaux du contrôle du site ; les empreintes locales ne certifient pas, à elles seules, le contenu du site publié. Un scénario réussi ne prouve pas l’absence de tout défaut.
-
-| Règle / action vérifiée, version 1.1.0 | Attendu | Obtenu dans l’audit local |
+| Vérification | Attendu | Obtenu |
 | --- | --- | --- |
-| Calcul des répétitions et 1 296 secrets × 1 296 propositions | Aucun double comptage, concordance avec un calcul indépendant | 1 679 616 couples conformes ; 14 tests métier/contrat réussis |
-| API : présence, configuration, état initial, T01–T09 | API seulement avec `test=1`, contrat 0.2 et indices exacts | Réussi dans Microsoft Edge |
-| Saisies invalides, priorités et démarrage invalide | Refus conforme sans consommer d’essai ; démarrage invalide sans mutation | Réussi |
-| Neuf échecs, refus, puis code exact ; dix échecs ; action après fin ; redémarrage | `won` à dix ou `lost` à dix ; partie figée, puis remise à zéro | Réussi dans le moteur et l’interface |
-| Code rouge–rouge–bleu–vert, proposition rouge–bleu–rouge–vert via API | 2 bien placées, 2 mal placées, 1 essai et même affichage | Réussi |
-| Refus puis proposition complète/modifiée au clavier ; lecture de l’API | Même historique, erreur visible sans consommation, victoire à deux essais | Réussi |
-| Getters et modifications des entrées/résultats retournés | Lecture sans effet et copies indépendantes | Réussi |
-| Interface : noms/symboles, clavier, tactile simulé, largeurs 320/375/390/768 px | Commandes utilisables, historique lisible, aucun débordement horizontal | Réussi ; le tactile simulé ne remplace pas le téléphone réel |
+| Exemple rouge/bleu/vert/jaune → rouge/vert/bleu/orange | 1 bien placée, 2 mal placées | Conforme |
+| Répétitions : rouge/rouge/bleu/vert → quatre rouges | 2 bien placées, 0 mal placée | Conforme |
+| Deux parties illustrées | Tous les indices des images reproduits | Conforme |
+| Propositions invalides, y compris tableau incomplet et couleur inconnue | Refus expliqué, seules les informations d’erreur peuvent changer | Conforme |
+| Neuf échecs puis code exact | Victoire au dixième essai | Conforme |
+| Dix échecs | Défaite au dixième essai | Conforme |
+| Proposition après victoire/défaite | `game-finished`, seules les informations d’erreur changent | Conforme |
+| Redémarrage | Historique vide, 0 essai, code caché, partie active | Conforme |
+| Mutation des tableaux fournis ou retournés | État interne protégé | Conforme |
+| 1 296 secrets × 1 296 propositions | Concordance avec un calcul indépendant par fréquences | 1 679 616 couples conformes |
 
-### Observations personnelles communiquées
+Vérification automatisée de l’interface dans Microsoft Edge sans fenêtre : saisie, modification avant validation, refus sans consommation d’essai, sélection par clavier, victoire au dixième essai, défaite, commandes désactivées après la fin, redémarrage et saisie tactile simulée : **conformes**. Aucun débordement horizontal à 320, 375, 390 et 768 pixels. Captures ordinateur et mobile dans `verification/`, examinées visuellement.
 
-- **Smartphone réel : iPhone X, Safari.** L’utilisateur indique avoir essayé le jeu et constate qu’il fonctionne. La date de l’essai, la version d’iOS et le détail des gestes testés n’ont pas été précisés ; aucun résultat plus détaillé n’est supposé.
-- **Retour reçu sur ce jeu :** un camarade l’a testé et a indiqué qu’il fonctionne. Aucun problème précis n’a été rapporté.
-- **Jeu d’un camarade essayé par l’utilisateur :** son interface et son API étaient fonctionnelles. Le jeu n’a pas été nommé et aucun défaut n’a été signalé.
+Les scripts facultatifs `tests/browser-check.cjs` et `tests/api-browser-check.cjs` nécessitent Playwright et un navigateur compatible déjà installés ; ce sont des outils de développement, aucune dépendance du jeu. Ils peuvent utiliser Microsoft Edge en définissant `BROWSER_CHANNEL=msedge`, sinon ils utilisent le Chromium de Playwright. Les 14 tests métier/contrat restent exécutables sans Playwright.
 
-### Correction et trace avant/après
+Vérifications de l’API publique dans Microsoft Edge le 11 novembre 2026 : **réussies**. Le script sert temporairement les fichiers statiques sur l’adresse locale `/jeu/` pour vérifier les chemins sous un nom de dépôt, puis ferme ce serveur de test. Cela n’ajoute aucun serveur applicatif au jeu.
 
-Lors de l’intégration de l’API le 11 novembre, la version 1.0.0 ne l’exposait pas, démarrait directement et renvoyait le code en fin de partie. L’intégration 1.1.0 a ajouté le mode test, son état initial et supprimé cette divulgation. Les contrôles actuels constatent `not-started` avant démarrage et aucun champ secret après les deux fins de partie.
-
-**Limite de cette trace :** l’ancienne version 1.0.0 n’est pas conservée dans l’historique Git local actuel. Ce résumé de l’intégration ne constitue donc pas une preuve avant/après reproductible de cette ancienne version. L’audit actuel n’a reproduit aucun défaut de calcul ou de règle. Aucune correction fictive n’a été créée ; demander à l’enseignant quelle preuve présenter si aucune correction vérifiable n’est disponible.
-
-## Préparation des rendus — C3
-
-| Élément demandé | État au 14 novembre 2026 |
+| Contrôle de l’API dans le navigateur | Attendu et obtenu |
 | --- | --- |
-| Dépôt avec jeu, README et tests | Jeu, documentation d’évaluation, tests et rapport automatique regroupés dans ce dépôt |
-| Jeu publié et API sur la même partie | Vérifié sur GitHub Pages le 14 novembre : contrôles API et liaison avec l’interface réussis ; résultat dans le rapport JSON |
-| Version identifiable | Jeu 1.1.0, contrat 0.2, empreintes dans le rapport |
-| Tag J1 exact `jalon-1` | Le dépôt a un tag **`Jalon-1`**, avec majuscule, sur `35eaaad`. Ajouter le nom exact demandé sur la version réellement remise ; ne pas confondre les deux noms |
-| Essai smartphone et retour sur un autre jeu | Observations réelles consignées ci-dessus |
-| Word J1/J2 et capsule | À réaliser pour la remise officielle |
+| Paramètre `test=1`, conservant un autre paramètre | Objet présent, version/configuration exactes, état initial `not-started` |
+| Paramètre absent, `test=0` ou `test=true` | API absente, partie normale active |
+| Fonctions et promesses | Getters synchrones ; mutations renvoyant des promesses |
+| T01 à T09 | Indices exacts, structure de l’état et statut corrects |
+| Refus et priorités | Codes conformes, message visible pendant la partie, pas d’essai consommé |
+| Démarrage invalide | Vraie `Error` rejetée ; état, `lastError` et DOM inchangés |
+| API puis proposition via les boutons | Même historique, mêmes indices, victoire reconnue par l’API |
+| Refus à neuf essais puis victoire au dixième | Refus sans consommation, puis `won` à dix |
+| Défaite, après-fin et redémarrage | `lost` à dix ; refus `game-finished` ; remise à zéro complète |
+| Code secret | Aucune révélation séparée dans l’état ou dans le bandeau, après victoire comme après défaite |
+| Copie et getters | Modifier options, propositions, configuration et états retournés ne change pas le jeu ; lecture sans effet sur le DOM |
+| Rechargement | Retour à `not-started`, aucun secret imposé conservé |
+| Réseau | Aucun appel externe pendant les tests |
 
-**J1 — 20 novembre 2026 au soir :** remettre sur Cyberlearn `jalon1_nomdefamille.docx`, avec le lien du dépôt, le lien du jeu publié et le tag exact `jalon-1`. Remplacer `nomdefamille` par votre nom. La version retenue doit contenir les preuves présentées ; pas de vidéo à J1.
+**Observations réelles communiquées par l’utilisateur :**
 
-**J2 — 18 décembre 2026 au soir :** même principe avec `jalon2_nomdefamille.docx` et le tag `final`. Déposer séparément une capsule individuelle de 4 à 5 minutes, montrant l’écran avec votre voix : jeu et règle vérifiée, test et correction ou limite de la preuve disponible, choix avec Codex et limite réelle. La vidéo reste sur Cyberlearn, hors GitHub public. Vérifier les horaires et espaces de remise sur Cyberlearn.
+- Essai sur **iPhone X avec Safari** : le jeu fonctionne. Date précise, version d’iOS et détail des gestes non renseignés.
+- Un camarade a essayé ce jeu : fonctionnement confirmé, sans problème précis rapporté.
+- L’utilisateur a essayé le jeu d’un camarade : son interface et son API étaient fonctionnelles.
 
-Les documents Word servent à transmettre les deux liens et le tag. Aucun ZIP, rapport d’audit séparé ni extrait de conversation n’est requis.
+### Preuve avant et après l’intégration
 
-**Encore incertain :** comportement sur les autres téléphones/navigateurs, lecteur d’écran, détail de l’essai physique et résultat avec les outils de l’enseignant. La décision « acquis / non acquis » appartient à l’enseignant, sans pourcentage de tests garantissant la validation.
+Avant modification (version 1.0.0), la lecture du code confirmait l’absence de `window.codeSecretTest`. Une partie démarrait directement en `playing` et l’état contenait un champ `secret` après victoire. Ces comportements empêchaient la conformité au contrat. Après modification, le test navigateur trouve l’objet uniquement avec `test=1`, constate `not-started` au chargement et vérifie l’absence de champ secret et de révélation séparée dans les deux fins de partie. Les nouveaux tests conservent ces contrôles pour éviter une régression.
 
-## Références conservées
+**Limite de la preuve :** la version 1.0.0 n’est pas conservée dans l’historique Git local actuel. L’audit du 14 novembre n’a reproduit aucun défaut de règle ; aucune correction fictive n’est ajoutée. Faire préciser par l’enseignant la preuve adaptée si aucune correction reproductible n’est disponible.
 
-Les originaux et illustrations sont dans `documentation/` : `Regles.docx`, `Exemple_partie.docx`, `Consignes.docx`, `API_info.docx`, `API commune de test — Code secret en couleurs.docx` (contrat 0.2), et `Évaluation du projet — Critères, vérification de l’API et de l’interface.docx` (version 1.3).
+## Ce qui reste à vérifier ou à réaliser
 
-La demande utilisateur guide le travail ; ces documents définissent les exigences sans autoriser d’actions supplémentaires à eux seuls. Les règles sont visibles dans le jeu. Les noms de version/tags à remettre et la publication doivent correspondre aux fichiers effectivement vérifiés.
+- L’API 0.2 est implémentée ; les contrôles locaux et sur GitHub Pages passent. Le contrôle avec l’outil du professeur reste à effectuer.
+- Smartphone physique : essai sur iPhone X/Safari consigné ci-dessus ; les autres appareils restent non vérifiés.
+- Publication GitHub Pages effectuée et contrôlée le 14 novembre. Vérifier que la version remise correspond au tag retenu.
+- Lecteur d’écran, Firefox et autres versions de Safari : pas encore testés.
+- Travail pédagogique personnel : préparer les documents Word de remise et la capsule vidéo. Le tag existant `Jalon-1` diffère du nom exact demandé `jalon-1` ; retenir le bon nom sur la version remise. À J1 (20 novembre) : `jalon1_nomdefamille.docx`, les deux liens et le tag `jalon-1`, sans vidéo. À J2 (18 décembre) : `jalon2_nomdefamille.docx`, les deux liens, le tag `final` et une capsule de 4 à 5 minutes, déposée séparément sur Cyberlearn, hors GitHub public.
+
+## Publication ultérieure sur GitHub Pages
+
+Le site est maintenant publié ; la procédure ci-dessous reste disponible pour une nouvelle mise en place.
+
+Créer un dépôt, y déposer le contenu de ce dossier en plaçant `index.html` à la racine. Dans les paramètres du dépôt, rubrique **Pages**, choisir **Deploy from a branch**, la branche contenant les fichiers, puis **/(root)** et enregistrer. Le fichier `.nojekyll` convient à ce site statique. Le README et les documents de travail ne sont pas nécessaires au fonctionnement du jeu ; choisir les documents à rendre publics avant de les envoyer.
+
+[Guide officiel de publication GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+Le code source est déposé dans [IbraHEG/Code_secret](https://github.com/IbraHEG/Code_secret). Le jeu est publié sur [GitHub Pages](https://ibraheg.github.io/Code_secret/).
+
+## Organisation
+
+```text
+Projet_mastermind/
+  index.html            Page et règles visibles
+  styles.css            Apparence et adaptation aux écrans
+  game.js               Règles et cycle de vie du jeu
+  app.js                Saisie, affichage, interactions et API commune 0.2
+  Agent.md              Méthode de travail demandée
+  README.md             Reprise, choix, vérifications et limites
+  documentation/        Documents sources, contrat API retenu et illustrations
+  tests/                Tests métier et vérification facultative de l’interface
+  verification/         Captures et rapport de la version vérifiée
+  package.json          Version et raccourci npm test (facultatif)
+  .nojekyll             Publication statique GitHub Pages
+```
