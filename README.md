@@ -197,11 +197,6 @@ Vérifications de l’API publique dans Microsoft Edge le 11 novembre 2026 : **r
 - Un camarade a essayé le jeu et testé l'API : il confirme le fonctionnement et n'a pas relevé de bugs particuliers.
 - Tests le jeu d’un camarade : son interface et son API étaient fonctionnelles.
 
-### Preuve avant et après l’intégration
-
-Avant modification (version 1.0.0), la lecture du code confirmait l’absence de `window.codeSecretTest`. Une partie démarrait directement en `playing` et l’état contenait un champ `secret` après victoire. Ces comportements empêchaient la conformité au contrat. Après modification, le test navigateur trouve l’objet uniquement avec `test=1`, constate `not-started` au chargement et vérifie l’absence de champ secret et de révélation séparée dans les deux fins de partie. Les nouveaux tests conservent ces contrôles pour éviter une régression.
-
-**Limite de la preuve :** la version 1.0.0 n’est pas conservée dans l’historique Git local actuel. L’audit du 14 novembre n’a reproduit aucun défaut de règle ; aucune correction fictive n’est ajoutée. Faire préciser par l’enseignant la preuve adaptée si aucune correction reproductible n’est disponible.
 
 ## Limites
 
