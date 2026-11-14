@@ -42,7 +42,9 @@ Palette exacte et ordonnée : `rouge`, `bleu`, `vert`, `jaune`, `orange`, `viole
 ## Choix faits avec Codex
 
 J'ai fourni le descriptif du projet et de l'API à Codex et je lui ai demandé de respecter les consignes. Je l'ai laissé libre pour le choix de l'interface et du design.
+
 J'ai également demandé à Codex d'effectuer tous les tests pour l'interface et l'API de son coté. Toutefois, j'ai également verifié manuellement pour être sûr que l'application et l'API étaient conformes aux attentes.
+
 Je lui ai également demandé de faire un ReadMe de base, mais j'ai souhaité le modifier manuellement pour qu'il soit plus conforme aux attentes et plus personnalisé.
 
 
@@ -201,7 +203,7 @@ Avant modification (version 1.0.0), la lecture du code confirmait l’absence de
 
 **Limite de la preuve :** la version 1.0.0 n’est pas conservée dans l’historique Git local actuel. L’audit du 14 novembre n’a reproduit aucun défaut de règle ; aucune correction fictive n’est ajoutée. Faire préciser par l’enseignant la preuve adaptée si aucune correction reproductible n’est disponible.
 
-## Ce qui reste à vérifier ou à réaliser
+## Limites
 
 - L’API 0.2 est implémentée ; les contrôles locaux et sur GitHub Pages passent. Le contrôle avec l’outil du professeur reste à effectuer.
 - Smartphone physique : essai sur iPhone X/Safari consigné ci-dessus ; les autres appareils restent non vérifiés.
