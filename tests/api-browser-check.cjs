@@ -15,13 +15,20 @@ const path = require('node:path');
     res.setHeader('Content-Type', `${allowed[file]}; charset=utf-8`);
     res.end(fs.readFileSync(path.resolve(__dirname, '..', file)));
   });
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  if (!process.env.MASTERMIND_URL) await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   let browser;
   try {
     browser = await chromium.launch({ headless: true, ...(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {}) });
     const page = await browser.newPage();
     const errors = [], externalRequests = [];
-    const origin = `http://127.0.0.1:${server.address().port}`;
+    const baseURL = new URL(process.env.MASTERMIND_URL || `http://127.0.0.1:${server.address().port}/jeu/`);
+    const origin = baseURL.origin;
+    const address = query => {
+      const url = new URL(baseURL);
+      url.searchParams.delete('test');
+      for (const [key, value] of new URLSearchParams(query)) url.searchParams.set(key, value);
+      return url.href;
+    };
     page.on('pageerror', error => errors.push(error.message));
     page.on('request', request => { if (!request.url().startsWith(origin)) externalRequests.push(request.url()); });
     const call = (method, ...args) => page.evaluate(({ method, args }) => window.codeSecretTest[method](...args), { method, args });
@@ -43,11 +50,11 @@ const path = require('node:path');
       assert.equal(Object.hasOwn(state, 'secret'), false); assert.equal(Object.hasOwn(state, 'solution'), false);
     }
     for (const query of ['', '?test=0', '?test=true', '?autre=1']) {
-      await page.goto(`${origin}/jeu/${query}`);
+      await page.goto(address(query));
       assert.equal(await page.evaluate(() => typeof window.codeSecretTest), 'undefined');
       assert.equal(await page.locator('#submit-guess').isDisabled(), false);
     }
-    await page.goto(`${origin}/jeu/?autre=conserve&test=1`);
+    await page.goto(address('?autre=conserve&test=1'));
     await page.waitForFunction(() => window.codeSecretTest);
     assert.equal(await page.evaluate(() => window.codeSecretTest.version), '0.2');
     assert.deepEqual(await call('getConfig'), { apiVersion: '0.2', rulesVersion: 'code-couleurs-1.0', secretLength: 4, maxAttempts: 10, allowDuplicates: true, colors: ['rouge', 'bleu', 'vert', 'jaune', 'orange', 'violet'] });
@@ -78,6 +85,37 @@ const path = require('node:path');
       assert.deepEqual(state.lastGuess, guess); assert.equal(state.lastError, null);
       await matchesScreen(state);
     }
+    // Scénario exact de la grille d’évaluation : API → interface → API.
+    await call('startGame', { secret: repeated });
+    state = await call('submitGuess', ['rouge', 'bleu', 'rouge', 'vert']);
+    assert.deepEqual(state.lastResult, { wellPlaced: 2, misplaced: 2 });
+    assert.equal(state.attempts, 1); await matchesScreen(state);
+    // Refus provoqué dans l’interface, relu dans la véritable partie de l’API.
+    await page.getByRole('button', { name: 'Valider la proposition' }).click();
+    const refusedInUi = await call('getState');
+    assert.equal(refusedInUi.lastError.code, 'invalid-type');
+    assert.deepEqual(withoutError(refusedInUi), state);
+    assert.equal(await page.locator('#message').innerText(), refusedInUi.lastError.message);
+    // Proposition complète saisie au clavier, y compris modification d’un choix.
+    for (const color of ['bleu', 'rouge', 'bleu', 'vert']) {
+      await page.getByRole('button', { name: `Choisir ${color}, symbole` }).focus();
+      await page.keyboard.press('Space');
+    }
+    await page.getByRole('button', { name: 'Position 1 : bleu', exact: true }).focus();
+    await page.keyboard.press('Enter');
+    await page.getByRole('button', { name: 'Choisir rouge, symbole' }).focus();
+    await page.keyboard.press('Enter');
+    await page.getByRole('button', { name: 'Valider la proposition' }).focus();
+    await page.keyboard.press('Enter');
+    state = await call('getState');
+    assert.equal(state.status, 'won'); assert.equal(state.attempts, 2);
+    assert.deepEqual(state.lastGuess, repeated); assert.equal(state.lastError, null);
+    await matchesScreen(state);
+    const finishedInUi = await call('submitGuess', null);
+    assert.equal(finishedInUi.lastError.code, 'game-finished');
+    assert.deepEqual(withoutError(finishedInUi), state);
+    await page.getByRole('button', { name: 'Nouvelle partie' }).click();
+    await matchesScreen(await call('getState'));
     await call('startGame', { secret: red });
     // Même partie dans les deux sens : API → écran puis commandes tactiles/clavier → API.
     await call('submitGuess', blue);
@@ -161,9 +199,12 @@ const path = require('node:path');
     assert.equal((await call('getState')).status, 'not-started');
     await matchesScreen(await call('getState'));
     assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
-    console.log('API publique 0.2 : présence conditionnelle, signatures, T01–T09, erreurs et priorités, démarrages atomiques, copies, getters, cycle de vie, rechargement et synchronisation API/interface sous /jeu/ : OK. Aucun appel externe.');
+    console.log(`Navigateur : Microsoft Edge/Chromium ${browser.version()}.`);
+    console.log(`Cible vérifiée : ${baseURL.href}`);
+    console.log('API publique 0.2 : présence conditionnelle, signatures, T01–T09, erreurs et priorités, démarrages atomiques, copies, getters, cycle de vie, rechargement et synchronisation API/interface : OK. Aucun appel externe au site du jeu.');
+    console.log('Grille évaluation 1.3 : scénario API 2/2, refus dans l’interface sans consommation, proposition complète et modification au clavier, victoire puis redémarrage reflétés dans l’API : OK.');
   } finally {
     if (browser) await browser.close();
-    await new Promise(resolve => server.close(resolve));
+    if (server.listening) await new Promise(resolve => server.close(resolve));
   }
 })().catch(error => { console.error(error); process.exitCode = 1; });

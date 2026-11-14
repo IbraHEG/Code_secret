@@ -1,0 +1,49 @@
+{
+  "dateUTC": "2026-11-14T15:11:15.656Z",
+  "version": "1.1.0",
+  "node": "v24.22.1",
+  "portee": "Tests automatisés locaux, et contrôle de l’URL MASTERMIND_URL si renseignée ; ne remplace pas un essai sur téléphone réel.",
+  "empreintesSHA256": {
+    "index.html": "92a5c6655c818bab022a3a706882d22635707c52450378f780d6b9fa595fc5d1",
+    "styles.css": "5bde715b012b2b766ac317bb1b526fab6f087c634761a0cdaf64ced99c9064af",
+    "game.js": "54225923175e5ed4cae1460f2e5b8f6e723d75a9d0b221aa26e8b61d455bbc9b",
+    "app.js": "a1bd4289644ce87e4952d3fa79f3a98b1637a62de3f183d66b813672af0a2387",
+    "package.json": "4b5a84cf03e55f489826bb8e3ab7fc420b27d3ab6d6498a9024033466690c274",
+    "tests/game.test.cjs": "7f74c1b773252cebb424bd0067ed8ec50a3c1757c7744f58fbc6cb841275c8a0",
+    "tests/api.test.cjs": "37ef6c54c7e4f7aa4b596eb48098a25e2fc776cf0db17b68127f930c9bfe55d8",
+    "tests/api-browser-check.cjs": "8d58d28d3576ebb3dccd4d7cce829e298bc118115984757e9c0e632324149849",
+    "tests/browser-check.cjs": "8553746593ae76ef11fbc7b38640fa4552f47d1856ebd52857892c2e95f8fb3a",
+    "tests/verifier.cjs": "1ec48fcc24cd0a5123580da75d44c527b5ef4836d8218f915592b355f6bd31b8"
+  },
+  "controles": [
+    {
+      "id": "regles-et-contrat",
+      "attendu": "14 tests réussis : règles, contrat 0.2 et 1 679 616 couples de codes conformes au calcul indépendant.",
+      "statut": "reussi",
+      "codeSortie": 0,
+      "sortie": "✔ contrat 0.2 : not-started et priorité des refus de cycle de vie (1.2415ms)\n✔ contrat 0.2 : type dense, longueur, puis couleur ; aucun essai consommé (1.4779ms)\n✔ contrat 0.2 : démarrage invalide atomique, codes et priorité des options (0.8186ms)\n✔ contrat 0.2 : neuf exemples T01 à T09, structure history et champs last (0.3544ms)\n✔ contrat 0.2 : refus à neuf essais, victoire/défaite, refus après fin et redémarrage (0.5548ms)\n✔ contrat 0.2 : copie profonde, getters purs et sérialisation JSON (0.1703ms)\n✔ palette exacte, ordre commun et code caché pendant la partie (1.2892ms)\n✔ les deux exemples demandés et les deux parties illustrées (0.304ms)\n✔ propositions invalides refusées sans changement de partie (0.8575ms)\n✔ victoire au dixième essai prioritaire sur la défaite et blocage après victoire (0.2632ms)\n✔ dix échecs, code non divulgué, blocage après défaite (0.183ms)\n✔ nouvelle partie réinitialise tous les résultats sans divulgation du secret (0.1336ms)\n✔ code fixe, copie des entrées et résultats : pas de modification extérieure (0.1224ms)\n✔ tous les 1 679 616 couples secret/proposition : comparaison avec un calcul indépendant (984.7925ms)\nℹ tests 14\nℹ suites 0\nℹ pass 14\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1096.6641"
+    },
+    {
+      "id": "api-et-interface",
+      "attendu": "API accessible seulement en mode test ; résultats T01–T09, refus, fins et redémarrages conformes ; même partie au clavier et via API.",
+      "statut": "reussi",
+      "codeSortie": 0,
+      "sortie": "Navigateur : Microsoft Edge/Chromium 157.0.4341.46.\nCible vérifiée : http://127.0.0.1:50519/jeu/\nAPI publique 0.2 : présence conditionnelle, signatures, T01–T09, erreurs et priorités, démarrages atomiques, copies, getters, cycle de vie, rechargement et synchronisation API/interface : OK. Aucun appel externe au site du jeu.\nGrille évaluation 1.3 : scénario API 2/2, refus dans l’interface sans consommation, proposition complète et modification au clavier, victoire puis redémarrage reflétés dans l’API : OK."
+    },
+    {
+      "id": "interface-et-tactile-simule",
+      "attendu": "Saisie/modification, refus, victoire au dixième, défaite et redémarrage conformes ; aucun débordement à 320/375/390/768 px ; saisie tactile simulée possible.",
+      "statut": "reussi",
+      "codeSortie": 0,
+      "sortie": "Interface : saisie, modification, refus, clavier, victoire au dixième, défaite, blocage, redémarrage, tactile simulé et largeurs 320/375/390/768 px : OK."
+    },
+    {
+      "id": "api-et-interface-publiees",
+      "attendu": "Contrôles du contrat et du lien API/interface réussis sur l’URL publique fournie.",
+      "statut": "reussi",
+      "codeSortie": 0,
+      "sortie": "Navigateur : Microsoft Edge/Chromium 157.0.4341.46.\nCible vérifiée : https://ibraheg.github.io/Code_secret/\nAPI publique 0.2 : présence conditionnelle, signatures, T01–T09, erreurs et priorités, démarrages atomiques, copies, getters, cycle de vie, rechargement et synchronisation API/interface : OK. Aucun appel externe au site du jeu.\nGrille évaluation 1.3 : scénario API 2/2, refus dans l’interface sans consommation, proposition complète et modification au clavier, victoire puis redémarrage reflétés dans l’API : OK.",
+      "url": "https://ibraheg.github.io/Code_secret/"
+    }
+  ]
+}
